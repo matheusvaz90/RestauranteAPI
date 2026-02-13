@@ -14,8 +14,6 @@ namespace Restaurante.API.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        // 1. O segredo: Não chamamos mais o AppDbContext aqui!
-        // Chamamos apenas o "Contrato" (Interface)
         private readonly IProdutoRepository _repository;
 
         public ProdutoController(IProdutoRepository repository)
@@ -26,7 +24,6 @@ namespace Restaurante.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
-            // 2. O Controller apenas pede para o repositório buscar
             var produtos = await _repository.GetProdutosAsync();
             return Ok(produtos);
         }
@@ -34,9 +31,22 @@ namespace Restaurante.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Produto>> PostProduto(Produto produto)
         {
-            // 3. O Controller apenas pede para o repositório salvar
             var novoProduto = await _repository.PostProdutoAsync(produto);
             return Ok(novoProduto);
+        }
+
+        [HttpDelete("{id}")]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var sucesso = await _repository.DeleteProdutoAsync(id);
+
+            if (!sucesso)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }

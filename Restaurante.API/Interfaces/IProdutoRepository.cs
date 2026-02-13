@@ -11,5 +11,7 @@ namespace Restaurante.API.Interfaces
         Task<IEnumerable<Produto>> GetProdutosAsync();
 
         Task<Produto> PostProdutoAsync(Produto produto);
+
+        Task<bool> DeleteProdutoAsync(int id);
     }
 }

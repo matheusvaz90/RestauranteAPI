@@ -29,4 +29,25 @@ public class ProdutoRepository : IProdutoRepository
         await _context.SaveChangesAsync();
         return produto;
     }
+
+    public async Task<bool> DeleteProdutoAsync(int id)
+    {
+        var produto = await _context.Produtos.FindAsync(id);
+        {
+
+            if (produto != null)
+            {
+                _context.Produtos.Remove(produto);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+    }
+
 }
