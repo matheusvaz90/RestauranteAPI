@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Restaurante.API.Data;
 using Restaurante.API.Models;
+using Restaurante.API.Interfaces;
 
 namespace Restaurante.API.Controllers
 {
@@ -13,27 +14,29 @@ namespace Restaurante.API.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        // 1. O segredo: Não chamamos mais o AppDbContext aqui!
+        // Chamamos apenas o "Contrato" (Interface)
+        private readonly IProdutoRepository _repository;
 
-        public ProdutoController(AppDbContext context)
+        public ProdutoController(IProdutoRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
-            return await _context.Produtos.ToListAsync();
+            // 2. O Controller apenas pede para o repositório buscar
+            var produtos = await _repository.GetProdutosAsync();
+            return Ok(produtos);
         }
 
         [HttpPost]
         public async Task<ActionResult<Produto>> PostProduto(Produto produto)
         {
-            _context.Produtos.Add(produto);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(produto);
+            // 3. O Controller apenas pede para o repositório salvar
+            var novoProduto = await _repository.PostProdutoAsync(produto);
+            return Ok(novoProduto);
         }
     }
 }

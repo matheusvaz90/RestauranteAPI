@@ -1,5 +1,7 @@
 using Restaurante.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Restaurante.API.Interfaces;
+using Restaurante.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlite("Data Source=restaurante.db"));
 
